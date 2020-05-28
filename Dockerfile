@@ -1,5 +1,15 @@
-FROM alpine
+FROM alpine AS build
 MAINTAINER David Personette <dperson@gmail.com>
+
+RUN apk --no-cache --no-progress upgrade && \
+    apk --no-cache --no-progress add bash build-base git linux-headers && \
+    git clone https://github.com/Andy2244/wsdd2.git && \
+    cd wsdd2 && make all  
+
+
+FROM alpine
+
+COPY --from=build /wsdd2/wsdd2 /usr/bin
 
 # Install samba
 RUN apk --no-cache --no-progress upgrade && \
